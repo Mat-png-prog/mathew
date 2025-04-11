@@ -1,4 +1,4 @@
-//app/(auth)/register/RegisterForm.tsx
+// app/(auth)/register/RegisterForm.tsx
 "use client";
 
 import React from "react";
@@ -22,9 +22,10 @@ import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 
 const RegisterForm = () => {
-  const router = useRouter(); // this state that we init is to navigate the user somewhere else
+  const router = useRouter();
   const [isPending, setIsPending] = React.useState(false);
 
+  // Use the form with RegisterFormValues type
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -33,16 +34,13 @@ const RegisterForm = () => {
       firstName: "",
       lastName: "",
       displayName: "",
-      /* -hoo */
       password: "",
       confirmPassword: "",
-      role: "USER",
-      /* agreeTerms: false, */
-      avatarUrl: null,
-      backgroundUrl: null,
+      role: "USER", // Use string literal instead of enum to match schema
     },
   });
 
+  // Handle form submission
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       setIsPending(true);
@@ -190,7 +188,6 @@ const RegisterForm = () => {
                   </FormItem>
                 )}
               />
-
  
               <FormField
                 control={form.control}
@@ -207,7 +204,6 @@ const RegisterForm = () => {
                         className="bg-background"
                       />
                     </FormControl>
-
                     <FormMessage />
                   </FormItem>
                 )}
@@ -233,34 +229,6 @@ const RegisterForm = () => {
                 )}
               />
             </div>
-
-  {/*           <FormField
-              control={form.control}
-              name="agreeTerms"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel className="text-muted-foreground">
-                      I agree to the{" "}
-                      <Link
-                        href="/terms"
-                        className="text-primary hover:text-primary/90 underline"
-                      >
-                        terms and conditions
-                      </Link>
-                      *
-                    </FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            /> */}
 
             <Button
               type="submit"

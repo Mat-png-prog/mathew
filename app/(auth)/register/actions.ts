@@ -1,6 +1,5 @@
-//app/(auth)/register/actions.ts
+// app/(auth)/register/actions.ts
 "use server";
-
 import prisma from "@/lib/prisma";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
@@ -13,7 +12,6 @@ export async function signUp(
 ): Promise<{ error?: string } | never> {
   try {
     const validatedData = registerSchema.parse(formData);
-
     const existingUsername = await prisma.user.findFirst({
       where: {
         username: {
@@ -22,13 +20,11 @@ export async function signUp(
         },
       },
     });
-
     if (existingUsername) {
       return {
         error: "Username already taken",
       };
     }
-
     const existingEmail = await prisma.user.findFirst({
       where: {
         email: {
@@ -37,22 +33,22 @@ export async function signUp(
         },
       },
     });
-
     if (existingEmail) {
       return {
         error: "Email already taken",
       };
     }
-
     ////////////THIS IS THE PART OF THE FUNCTION WHERE ALL PARAMS HAVE PASSED THE CHECKS/////////////
-
     const passwordHash = await hash(validatedData.password, {
       memoryCost: 19456,
       timeCost: 2,
       outputLen: 32,
       parallelism: 1,
     });
-
+    
+    // Map the string role to UserRole enum
+    const userRole = validatedData.role as UserRole;
+    
     await prisma.user.create({
       data: {
         username: validatedData.username,
@@ -68,16 +64,13 @@ export async function signUp(
         /* avatarUrl: validatedData.avatarUrl, */
         /* backgroundUrl: validatedData.backgroundUrl, */
         /* agreeTerms: validatedData.agreeTerms, */
-        role: validatedData.role as UserRole,
+        role: userRole,
       },
     });
-
     redirect("/login");
   } catch (error) {
     if (isRedirectError(error)) throw error;
-
     console.error("Registration error:", error);
-
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
         return {
@@ -85,7 +78,6 @@ export async function signUp(
         };
       }
     }
-
     return {
       error: "Something went wrong. Please try again.",
     };

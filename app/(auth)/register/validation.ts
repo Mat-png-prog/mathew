@@ -1,5 +1,3 @@
-//app/(auth)/register/validation.ts
-
 import * as z from "zod";
 import { UserRole } from "@prisma/client";
 
@@ -36,12 +34,10 @@ export const registerSchema = z
       .regex(/[0-9]/, "Password must contain at least one number")
       .regex(
         /[^A-Za-z0-9]/,
-        "Password must contain at least one special character",
+        "Password must contain at least one special character"
       ),
     confirmPassword: z.string(),
-    role: z.nativeEnum(UserRole).default(UserRole.USER),
-    avatarUrl: z.string().optional().nullable(),
-    backgroundUrl: z.string().optional().nullable(),
+    role: z.nativeEnum(UserRole),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
